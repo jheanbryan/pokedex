@@ -1,29 +1,19 @@
-const offset = 0;
-const limit = 100;
-const url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
+import { pokemonsList } from "./poke-api.js"; 
+const divPokemons = document.getElementById('pokemons');
 
-fetch(url)
-    .then(response =>  response.json())
-    .then(jsonBody =>  jsonBody.results)
-    .then((pokemonsList) => {
-        generatePokemon(pokemonsList)
-    })
-    .catch(err => console.error(err))
-    .finally(() => console.log('Requisição Concluída'))
+generatePokemon(pokemonsList);
 
 
-function generatePokemon(list) {
-    for (let i = 0; i < list.length; i++) {
-        const pokemon = list[i];
-        const divPokemons = document.getElementById('pokemons');
-        divPokemons.innerHTML+= convertPokemonToHtml(pokemon, i+1);
-    }
+function generatePokemon(list = []) {
+    let newList = list.map(pokemon => convertPokemonToHtml(pokemon))
+    const newHtml = newList.join('');
+    divPokemons.innerHTML = newHtml;
 }
 
-function convertPokemonToHtml(pokemon, id) {
+function convertPokemonToHtml(pokemon) {
     return `
         <li class="pokemon">
-            <span class="number">#0${id}</span>
+            <span class="number">#000</span>
             <span class="name">${pokemon.name}</span>
 
             <div class="detail">
