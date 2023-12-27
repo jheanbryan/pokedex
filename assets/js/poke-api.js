@@ -1,27 +1,34 @@
-const pokeApi = {};
 let pokemonsList = [];
+let pokemonsListDetails = [];
 
-async function getPokemons(offset = 0, limit = 10) {
-    const url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
+async function getPokemonDetails(pokemonsList) {
+  const requests = pokemonsList.map(pokemon => {
+    return fetch(pokemon.url)
+      .then(response => response.json())
+      .then(data => {
+        return data;
+      })
+      .catch(err => console.error(err));
+  });
 
-    await fetch(url)
-        .then(response =>  response.json())
-        .then(jsonBody =>  jsonBody.results)
-        .then((pokemonsListApi) => {
-            pokemonsList = pokemonsListApi;
-            pokemonsListApi.map((pokemon) => fetch(pokemon.url).json())
-        })
-        .catch(err => console.error(err))
-        .finally(() => console.log('Requisição Concluída'))
-
-    Promise.all([
-        fetch('https://pokeapi.co/api/v2/pokemon/1'),
-        fetch('https://pokeapi.co/api/v2/pokemon/2'),
-        fetch('https://pokeapi.co/api/v2/pokemon/3'),
-        fetch('https://pokeapi.co/api/v2/pokemon/4'),
-        fetch('https://pokeapi.co/api/v2/pokemon/5')
-    ]).then((results) => console.log(1))
-
+  pokemonsListDetails = await Promise.all(requests);
 }
+
+async function getPokemons(offset = 0, limit = 100) {
+  const url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
+
+  try {
+    const response = await fetch(url);
+    const jsonBody = await response.json();
+    pokemonsList = jsonBody.results;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    console.log('Requisição Concluída');
+  }
+}
+
 await getPokemons();
-export { pokemonsList };
+await getPokemonDetails(pokemonsList);
+
+export { pokemonsList, pokemonsListDetails };

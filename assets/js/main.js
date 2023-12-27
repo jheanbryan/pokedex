@@ -1,28 +1,30 @@
-import { pokemonsList } from "./poke-api.js"; 
+import { pokemonsList, pokemonsListDetails } from "./poke-api.js"; 
 const divPokemons = document.getElementById('pokemons');
 
-generatePokemon(pokemonsList);
+generatePokemon(pokemonsList, pokemonsListDetails);
 
+function generatePokemon(list, detailsList) {
 
-function generatePokemon(list = []) {
-    let newList = list.map(pokemon => convertPokemonToHtml(pokemon))
+    let newList = list.map((pokemon, index) => convertPokemonToHtml(pokemon, detailsList, index));
     const newHtml = newList.join('');
     divPokemons.innerHTML = newHtml;
+
 }
 
-function convertPokemonToHtml(pokemon) {
+function convertPokemonToHtml(pokemon, detailsList, index) {
+    const type = detailsList[index].types[0].type.name;
+
     return `
-        <li class="pokemon">
-            <span class="number">#000</span>
+        <li class="pokemon ${type}">
+            <span class="number">${index}</span>
             <span class="name">${pokemon.name}</span>
 
-            <div class="detail">
-                <ol class="types">
-                    <li class="type">grass</li>
-                    <li class="type">poison</li>
+            <div class="detail ${type}">
+                <ol class="types ${type}">
+                    <li class="type ${type}">${type}</li>
                 </ol>
 
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg"
+                <img src="${detailsList[index].sprites.front_default}"
                     alt="${pokemon.name}">
             </div>
         </li>
